@@ -99,6 +99,12 @@ namespace SecBox
         /// <param name="e">A <see cref="T:System.Windows.Forms.KeyEventArgs"/> that contains the event data. </param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
+            if (ReadOnly || !Enabled)
+            {
+                base.OnKeyDown(e);
+                return;
+            }
+
             if (e.KeyCode == Keys.Delete)
             {
                 if (e.Modifiers == Keys.Control)
@@ -129,6 +135,12 @@ namespace SecBox
         /// <param name="e">A <see cref="T:System.Windows.Forms.KeyPressEventArgs"/> that contains the event data. </param>
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
+            if (ReadOnly || !Enabled)
+            {
+                base.OnKeyPress(e);
+                return;
+            }
+
             if (e.KeyChar == 0x08)
             {
                 // backspace
@@ -170,6 +182,11 @@ namespace SecBox
 
         private void HandlePaste()
         {
+            if (ReadOnly || !Enabled)
+            {
+                return;
+            }
+
             string text;
 
             try
@@ -191,6 +208,11 @@ namespace SecBox
 
         private void HandleDelete()
         {
+            if (ReadOnly || !Enabled)
+            {
+                return;
+            }
+
             int start = SelectionStart;
             int length = SelectionLength;
 

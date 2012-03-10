@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 // semantic versioning: http://semver.org/
 
 [assembly: AssemblyVersion("1.0.0")]
-[assembly: AssemblyFileVersion("1.0.0-beta.2")]
+[assembly: AssemblyFileVersion("1.0.0-beta.3")]
 [assembly: AssemblyInformationalVersion("1.0 beta")]
