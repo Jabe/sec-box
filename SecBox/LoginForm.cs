@@ -19,5 +19,15 @@ namespace SecBox
                 SelectNextControl((Control) sender, true, true, true, true);
             }
         }
+
+        private void UxPasswordTextChanged(object sender, EventArgs e)
+        {
+            string unsecureText = uxPassword.UnsecureText;
+
+            Console.WriteLine("Length: {0,4} | Text: {1} | UnsecureText: {2}",
+                              unsecureText.Length,
+                              uxPassword.Text,
+                              unsecureText);
+        }
     }
 }

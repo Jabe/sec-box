@@ -66,6 +66,7 @@ namespace SecBox
             this.uxPassword.Size = new System.Drawing.Size(181, 20);
             this.uxPassword.TabIndex = 1;
             this.uxPassword.UseSystemPasswordChar = true;
+            this.uxPassword.TextChanged += new System.EventHandler(this.UxPasswordTextChanged);
             this.uxPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlurOnReturn);
             // 
             // LoginForm

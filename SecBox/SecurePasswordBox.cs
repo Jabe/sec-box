@@ -10,11 +10,21 @@ using JetBrains.Annotations;
 
 namespace SecBox
 {
+    /// <summary>
+    /// A password box implementation which behaves like a normal textbox, but stores all data in a <see cref="SecureString"/>.
+    /// </summary>
     [PublicAPI]
     public class SecurePasswordBox : TextBox
     {
+        #region Native Functions
+
         private const int WmPaste = 0x302;
         private const int WmChar = 0x102;
+
+        [DllImport("user32.dll", EntryPoint = "SendMessageW", CharSet = CharSet.Unicode)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, string lParam);
+
+        #endregion
 
         private readonly SecureString _mutableSecureText = new SecureString();
 
@@ -24,6 +34,10 @@ namespace SecBox
             UseSystemPasswordChar = true;
         }
 
+        /// <summary>
+        /// Gets a copy of the current <see cref="SecureString"/> buffer.
+        /// </summary>
+        /// <remarks>You own the copy, so remember to <see cref="SecureString.Dispose"/> of it.</remarks>
         [PublicAPI]
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -37,6 +51,10 @@ namespace SecBox
             }
         }
 
+        /// <summary>
+        /// Get a managed <see cref="string"/> representation of the current <see cref="SecureString"/> buffer.
+        /// </summary>
+        /// <remarks>This is useful for debugging. Do not use in productive environments, as it defeats the purpose of this control and its backing <see cref="SecureString"/>.</remarks>
         [PublicAPI]
         [Browsable(false)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -58,9 +76,6 @@ namespace SecBox
                 }
             }
         }
-
-        [DllImport("user32.dll", EntryPoint = "SendMessageW", CharSet = CharSet.Unicode)]
-        private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, string lParam);
 
         /// <summary>
         /// Processes Windows messages.
@@ -153,24 +168,13 @@ namespace SecBox
             base.OnKeyPress(e);
         }
 
-        /// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data. </param>
-        protected override void OnTextChanged(EventArgs e)
-        {
-            base.OnTextChanged(e);
-            SecureTextChanged();
-        }
-
         private void HandlePaste()
         {
-            if (!Clipboard.ContainsText())
-            {
-                return;
-            }
-
             string text;
 
             try
             {
+                if (!Clipboard.ContainsText()) return;
                 text = Clipboard.GetText();
             }
             catch
@@ -178,6 +182,7 @@ namespace SecBox
                 return;
             }
 
+            // send each char to ourself
             foreach (char c in text)
             {
                 SendMessage(Handle, WmChar, new IntPtr(c), null);
@@ -189,6 +194,8 @@ namespace SecBox
             int start = SelectionStart;
             int length = SelectionLength;
 
+            // no selection: run once
+            //    selection: run for each char
             for (int i = 0; i < Math.Max(1, length); i++)
             {
                 if (start < _mutableSecureText.Length)
@@ -196,14 +203,6 @@ namespace SecBox
                     _mutableSecureText.RemoveAt(start);
                 }
             }
-        }
-
-        private void SecureTextChanged()
-        {
-#if DEBUG
-            Console.WriteLine("New length: {0,4} | Text is: {1} | Dump: {2}", _mutableSecureText.Length, Text,
-                              UnsecureText);
-#endif
         }
     }
 }
