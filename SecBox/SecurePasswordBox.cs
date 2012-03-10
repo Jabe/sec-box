@@ -12,6 +12,9 @@ namespace SecBox
     [PublicAPI]
     public class SecurePasswordBox : TextBox
     {
+        private const int WmPaste = 0x302;
+        private const int WmChar = 0x102;
+
         private readonly SecureString _mutableSecureText = new SecureString();
 
         [PublicAPI]
@@ -63,9 +66,7 @@ namespace SecBox
         /// <param name="m">A Windows Message object. </param>
         protected override void WndProc(ref Message m)
         {
-            const int wmPaste = 0x302;
-
-            if (m.Msg == wmPaste)
+            if (m.Msg == WmPaste)
             {
                 HandlePaste();
                 m.Result = IntPtr.Zero;
@@ -85,11 +86,18 @@ namespace SecBox
             {
                 if (e.Modifiers == Keys.Control)
                 {
-                    // del right
+                    // del right to end
                     if (SelectionLength == 0)
                     {
                         SelectionLength = Text.Length - SelectionStart;
                     }
+                }
+                else if (e.Modifiers == Keys.Shift && SelectionLength == 0)
+                {
+                    // del left: rewrite as backspace... but only if sellength = 0
+                    // otherwise it's copy, which is is blocked by windows
+                    SendMessage(Handle, WmChar, new IntPtr(0x08), null);
+                    e.SuppressKeyPress = true;
                 }
 
                 HandleDelete();
@@ -123,7 +131,7 @@ namespace SecBox
             {
                 if (SelectionLength == 0)
                 {
-                    // del left
+                    // del left to end
                     int caret = SelectionStart;
                     SelectionStart = 0;
                     SelectionLength = caret;
@@ -152,8 +160,6 @@ namespace SecBox
 
         private void HandlePaste()
         {
-            const int wmChar = 0x102;
-
             if (!Clipboard.ContainsText())
             {
                 return;
@@ -172,7 +178,7 @@ namespace SecBox
 
             foreach (char c in text)
             {
-                SendMessage(Handle, wmChar, new IntPtr(c), null);
+                SendMessage(Handle, WmChar, new IntPtr(c), null);
             }
         }
 
