@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -38,8 +39,9 @@ namespace SecBox
 
         [PublicAPI]
         [Browsable(false)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string UnsafeString
+        public string UnsecureText
         {
             get
             {
@@ -200,7 +202,7 @@ namespace SecBox
         {
 #if DEBUG
             Console.WriteLine("New length: {0,4} | Text is: {1} | Dump: {2}", _mutableSecureText.Length, Text,
-                              UnsafeString);
+                              UnsecureText);
 #endif
         }
     }
