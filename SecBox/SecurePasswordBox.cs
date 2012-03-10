@@ -173,6 +173,12 @@ namespace SecBox
             }
             else if (!char.IsControl(e.KeyChar))
             {
+                if (SelectionLength > 0)
+                {
+                    // overwrite
+                    HandleDelete();
+                }
+
                 _mutableSecureText.InsertAt(SelectionStart, e.KeyChar);
                 e.KeyChar = '*';
             }
