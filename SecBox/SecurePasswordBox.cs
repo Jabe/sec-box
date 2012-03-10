@@ -186,6 +186,16 @@ namespace SecBox
             base.OnKeyPress(e);
         }
 
+        /// <summary>
+        /// Resets the <see cref="P:System.Windows.Forms.Control.Text"/> property to its default value.
+        /// </summary>
+        /// <filterpriority>2</filterpriority>
+        public override void ResetText()
+        {
+            _mutableSecureText.Clear();
+            base.ResetText();
+        }
+
         private void HandlePaste()
         {
             if (ReadOnly || !Enabled)

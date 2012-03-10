@@ -54,7 +54,7 @@ namespace SecBox
             this.uxUsername.Name = "uxUsername";
             this.uxUsername.Size = new System.Drawing.Size(181, 20);
             this.uxUsername.TabIndex = 0;
-            this.uxUsername.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlurOnReturn);
+            this.uxUsername.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.KeyOverrides);
             // 
             // uxPassword
             // 
@@ -67,7 +67,7 @@ namespace SecBox
             this.uxPassword.TabIndex = 1;
             this.uxPassword.UseSystemPasswordChar = true;
             this.uxPassword.TextChanged += new System.EventHandler(this.UxPasswordTextChanged);
-            this.uxPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlurOnReturn);
+            this.uxPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.KeyOverrides);
             // 
             // LoginForm
             // 

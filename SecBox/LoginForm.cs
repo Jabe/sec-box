@@ -12,11 +12,15 @@ namespace SecBox
             InitializeComponent();
         }
 
-        private void BlurOnReturn(object sender, KeyPressEventArgs e)
+        private void KeyOverrides(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char) Keys.Return && sender is Control)
             {
                 SelectNextControl((Control) sender, true, true, true, true);
+            }
+            else if (e.KeyChar == (char) Keys.Escape && sender is Control)
+            {
+                ((Control) sender).ResetText();
             }
         }
 
