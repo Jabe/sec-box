@@ -24,15 +24,25 @@ namespace SecBox
 
         #endregion
 
-        private readonly SecureString _mutableSecureText = new SecureString();
+        private SecureString _mutableSecureText = new SecureString();
 
         public SecurePasswordBox()
         {
             UseSystemPasswordChar = true;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_mutableSecureText != null) _mutableSecureText.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
         /// <summary>
-        /// Gets a copy of the current <see cref="SecureString"/> buffer.
+        /// Gets or sets a copy of the current <see cref="SecureString"/> buffer.
         /// </summary>
         /// <remarks>You own the copy, so remember to <see cref="SecureString.Dispose"/> of it.</remarks>
         [Browsable(false)]
@@ -44,6 +54,12 @@ namespace SecBox
                 SecureString copy = _mutableSecureText.Copy();
                 copy.MakeReadOnly();
                 return copy;
+            }
+            set
+            {
+                if (_mutableSecureText != null) _mutableSecureText.Dispose();
+                _mutableSecureText = value.Copy();
+                Text = "".PadLeft(_mutableSecureText.Length, '*');
             }
         }
 
@@ -164,7 +180,7 @@ namespace SecBox
                 HandleDelete();
 
                 // continue like a normal delete
-                e.KeyChar = (char) 0x08;
+                e.KeyChar = (char)0x08;
             }
             else if (!char.IsControl(e.KeyChar))
             {
