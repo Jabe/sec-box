@@ -6,14 +6,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Windows.Forms;
-using JetBrains.Annotations;
 
 namespace SecBox
 {
     /// <summary>
     /// A password box implementation which behaves like a normal textbox, but stores all data in a <see cref="SecureString"/>.
     /// </summary>
-    [PublicAPI]
     public class SecurePasswordBox : TextBox
     {
         #region Native Functions
@@ -28,7 +26,6 @@ namespace SecBox
 
         private readonly SecureString _mutableSecureText = new SecureString();
 
-        [PublicAPI]
         public SecurePasswordBox()
         {
             UseSystemPasswordChar = true;
@@ -38,7 +35,6 @@ namespace SecBox
         /// Gets a copy of the current <see cref="SecureString"/> buffer.
         /// </summary>
         /// <remarks>You own the copy, so remember to <see cref="SecureString.Dispose"/> of it.</remarks>
-        [PublicAPI]
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SecureString SecureText
@@ -55,7 +51,6 @@ namespace SecBox
         /// Get a managed <see cref="string"/> representation of the current <see cref="SecureString"/> buffer.
         /// </summary>
         /// <remarks>This is useful for debugging. Do not use in productive environments, as it defeats the purpose of this control and its backing <see cref="SecureString"/>.</remarks>
-        [PublicAPI]
         [Browsable(false)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
